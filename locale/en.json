@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Prompt Manager",
+    "description": "File-backed prompt library: manage prompts, see which file each prompt is injected from, edit inline, and add external source files."
+  }
+}

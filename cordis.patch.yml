@@ -1,0 +1,4 @@
+- insert:
+    - id: prompt-manager
+      name: '@local/prompt-manager'
+      config: {}
