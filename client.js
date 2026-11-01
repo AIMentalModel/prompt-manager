@@ -29,6 +29,33 @@ window.__ModuleLoader__.load({
       'action.importDshHint': '抓取当前拼装出的系统提示词各段，写入内置文件（不覆盖你自己的提示词）',
       'action.imported': '已导入 {count} 段',
       'prompt.originDsh': 'DSH',
+      'prompt.injectedBy': '由 {plugin} 注入',
+      'prompt.condition': '注入条件：来自 {plugin} 的段「{section}」，order {order}。它由原插件自己注入，本插件只展示和翻译，不会重复注入。',
+      'prompt.conditionManaged': '注入条件：来自 {plugin} 的段「{section}」，原 order {order}。现在由本插件接管：开关打开即由本插件注入，关闭则从系统提示词中移除。',
+      'prompt.conditionMissing': '注入条件：{plugin} 的段「{section}」当前不在 DSH 注册表里（可能来自其它 profile，或插件已卸载），因此不会注入。',
+      'prompt.dragHint': '拖动卡片可调整提示词顺序，注入时按这个顺序拼接。',
+      'prompt.titleCustom': '自定义',
+      'plugin.title': '插件提示词',
+      'plugin.hint': '按注册系统提示词段的插件分组。这些段由各自的插件在组装时注入，本插件只负责展示和翻译，不提供注入开关；点插件名可筛选下方列表。',
+      'plugin.count': '{count} 段',
+      'plugin.injected': '已注入 {injected}/{count}',
+      'plugin.filterOff': '显示全部',
+      'plugin.empty': '还没有导入任何插件的提示词。点右上角「导入 DSH 提示词」抓取当前系统提示词各段。',
+      'plugin.builtin': 'DSH 内置',
+      'plugin.untitled': '未归属插件',
+      'plugin.emptyFilter': '该插件目前没有提示词。',
+      'preset.title': '注入预设',
+      'preset.hint': 'DSH 的 agent 预设可以分别管理注入：选中一个预设后，下面的开关只改这个预设的覆盖值，其它预设仍按全局设置。会话运行时按它所用的预设取对应的一份。',
+      'preset.global': '默认（全局）',
+      'preset.overridden': '{count} 个覆盖',
+      'preset.default': '默认预设',
+      'preset.broken': '已移除',
+      'preset.inherit': '继承',
+      'preset.overrideOn': '本预设已开启',
+      'preset.overrideOff': '本预设已关闭',
+      'preset.empty': '当前 profile 没有可用的 agent 预设；所有会话按「默认（全局）」注入。',
+      'preset.active': '正在按「{name}」管理注入',
+      'editor.fieldInjectPreset': '注入到系统提示词（只对「{name}」预设生效）',
       'sources.title': '来源文件',
       'sources.empty': '暂无来源文件。',
       'source.internal': '内置',
@@ -76,7 +103,9 @@ window.__ModuleLoader__.load({
       'editor.save': '保存',
       'editor.cancel': '取消',
       'editor.titleRequired': '标题不能为空',
-      'editor.textTitleHint': '标题取自文件里的第一个「# 标题」；直接编辑下方内容即可',
+      'editor.titleHint': '标题只影响列表显示和注入时的「## 标题」，不会写回来源文件。',
+      'editor.textTitleHint': '文本来源的标题默认取自文件里的第一个「# 标题」；可改成任意显示名，留空则恢复文件里的标题。',
+      'editor.resetTitle': '恢复默认',
       'sourceDialog.title': '添加来源文件',
       'sourceDialog.path': '文件绝对路径（JSON 格式，不存在时会创建）',
       'sourceDialog.readonly': '只读（仅展示，不允许修改）',
@@ -89,6 +118,62 @@ window.__ModuleLoader__.load({
       'sourceDialog.noFiles': '该目录下没有 .json / .md / .txt 文件',
       'sourceDialog.loading': '读取目录中…',
       'sourceDialog.restartHint': '（Host 端没有这个接口，通常是插件更新后还没重启 DSH：请重启 DSH 再刷新页面）',
+      'tabs.mine': '我的提示词',
+      'tabs.system': '系统提示词',
+      'tabs.plugin': '插件提示词',
+      'tabs.settings': '设置',
+      'status.injectOn': '注入 {count} 条',
+      'status.injectOff': '已停用注入',
+      'inject.title': '注入状态',
+      'inject.hint': '本插件的提示词在每次组装系统提示词时读取，修改后从下一次请求开始生效；关闭后不再向系统提示词注入任何内容，管理功能仍然可用。',
+      'inject.on': '已启用',
+      'inject.off': '已停用',
+      'inject.enable': '启用注入',
+      'inject.disable': '停用注入',
+      'inject.rules': '每次请求前由 DSH 组装系统提示词时读取本插件缓存的文本（约 2 秒内自动刷新）；只有你自己的提示词会按「## 标题 + 内容」依次拼在「注入前言」之后。DSH 系统段和其它插件的段由它们各自注入，这里只展示和翻译。',
+      'inject.count': '当前视角注入 {count} 条',
+      'inject.disabledHint': '注入已停用：以下提示词不会进入系统提示词。',
+      'section.mine': '我的提示词',
+      'section.mineDesc': '内置文件与你自己添加的来源文件；新建提示词和添加来源都在这里。',
+      'section.system': '系统提示词',
+      'section.systemDesc': 'DSH 第一方固定段（身份、来源、Web 界面等）。它们本来就会由 DSH 注入，这里开启会重复拼一次。',
+      'section.plugin': '插件提示词',
+      'section.pluginDesc': '第三方插件注册的提示词段；按插件分组，可批量开关。',
+      'section.systemEmpty': '还没有导入系统提示词段。',
+      'section.pluginEmpty': '还没有导入插件提示词段。',
+      'presetDefs.title': '预设声明的提示词',
+      'presetDefs.hint': '直接读 DSH agent preset 的声明（agentPresets.readDocument），比如 persona 的 prefix；不需要该预设跑过。下面另外列出该预设实际运行时注册过的段（如果有）。全部只读。',
+      'presetView.runtimeHead': '运行时实际注册的段（{time}）',
+      'presetDefs.empty': '当前 profile 读不到预设声明（headless，或没有启用 agentPresets）。',
+      'presetDefs.count': '{count} 条',
+      'presetDefs.none': '没有提示词声明',
+      'translate.title': '翻译',
+      'translate.target': '目标语言',
+      'translate.provider': '模型 provider（留空用第一个可用）',
+      'translate.model': '模型（留空用 provider 默认）',
+      'translate.save': '保存翻译设置',
+      'translate.saved': '翻译设置已保存',
+      'translate.run': '翻译',
+      'translate.running': '翻译中…',
+      'translate.done': '已翻译为 {lang}',
+      'translate.skipped': '内容已经是 {lang}，无需翻译',
+      'translate.failed': '翻译失败：{message}',
+      'translate.clear': '清除译文',
+      'translate.showTranslation': '看译文',
+      'translate.showOriginal': '看原文',
+      'translate.badge': '译文',
+      'translate.batch': '翻译全部（{count}）',
+      'translate.batchDone': '已翻译 {count} 条',
+      'translate.batchFailed': '翻译完成 {done} 条，失败 {failed} 条：{message}',
+      'translate.hint': '译文保存在 state.json，不改来源文件；默认只用于阅读，开启「注入译文」后注入时使用译文。',
+      'translate.warning': '格式可能不一致：{detail}',
+      'prompt.injectSource': '注入原文',
+      'prompt.injectTranslation': '注入译文',
+      'prompt.injectTranslationHint': '注入时使用这段译文；关闭则注入原文',
+      'translate.empty': '没有需要翻译的提示词。',
+      'translate.llmHint': '调用当前 profile 的 LLM 服务（优先使用设置的 provider）。',
+      'translate.llmAvailable': '可用模型服务：{providers}',
+      'translate.llmUnavailable': '当前 profile 没有可用的 LLM 服务，翻译会失败。',
       'state.loading': '加载中…',
       'state.saving': '保存中…',
     }
@@ -102,6 +187,33 @@ window.__ModuleLoader__.load({
       'action.importDshHint': 'Snapshot the assembled system-prompt sections into the built-in file (your own prompts are kept)',
       'action.imported': 'Imported {count}',
       'prompt.originDsh': 'DSH',
+      'prompt.injectedBy': 'Injected by {plugin}',
+      'prompt.condition': 'Injection: section "{section}" from {plugin} at order {order}. Its own plugin injects it; this panel only shows and translates it and never injects it again.',
+      'prompt.conditionManaged': 'Injection: section "{section}" from {plugin} at order {order}. prompt-manager now owns this one: on, it is injected here; off, it is removed from the system prompt.',
+      'prompt.conditionMissing': 'Injection: section "{section}" from {plugin} is not in the DSH registry right now (other profile, or the plugin was uninstalled), so it is not injected.',
+      'prompt.dragHint': 'Drag cards to reorder the prompts; the injected text follows this order.',
+      'prompt.titleCustom': 'Custom',
+      'plugin.title': 'Plugin prompts',
+      'plugin.hint': 'Grouped by the plugin that registered each system-prompt section. Those plugins inject their own sections; this panel only shows and translates them and offers no injection switch. Click a plugin name to filter the list below.',
+      'plugin.count': '{count} sections',
+      'plugin.injected': '{injected}/{count} injected',
+      'plugin.filterOff': 'Show all',
+      'plugin.empty': 'No plugin prompts imported yet. Click "Import DSH prompts" to snapshot the current sections.',
+      'plugin.builtin': 'DSH built-in',
+      'plugin.untitled': 'Unattributed',
+      'plugin.emptyFilter': 'No prompts from this plugin yet.',
+      'preset.title': 'Injection presets',
+      'preset.hint': 'DSH agent presets can manage injection separately: pick a preset and the switches below only change that preset\'s overrides, while every other preset keeps the global flag. A running session reads the copy for its own preset.',
+      'preset.global': 'Default (global)',
+      'preset.overridden': '{count} overrides',
+      'preset.default': 'Default preset',
+      'preset.broken': 'Removed',
+      'preset.inherit': 'Inherit',
+      'preset.overrideOn': 'On in this preset',
+      'preset.overrideOff': 'Off in this preset',
+      'preset.empty': 'This profile has no agent presets; every session injects from "Default (global)".',
+      'preset.active': 'Managing injection for "{name}"',
+      'editor.fieldInjectPreset': 'Inject into the system prompt (only for the "{name}" preset)',
       'sources.title': 'Source Files',
       'sources.empty': 'No source files yet.',
       'source.internal': 'Built-in',
@@ -149,7 +261,9 @@ window.__ModuleLoader__.load({
       'editor.save': 'Save',
       'editor.cancel': 'Cancel',
       'editor.titleRequired': 'Title is required',
-      'editor.textTitleHint': 'The title comes from the file\u2019s first “# heading”; edit the content below',
+      'editor.titleHint': 'The title only affects the list and the “## title” line when injected; it is never written back to the source file.',
+      'editor.textTitleHint': 'Defaults to the file’s first “# heading”. You can rename it for display only; clearing it restores the heading.',
+      'editor.resetTitle': 'Reset',
       'sourceDialog.title': 'Add Source File',
       'sourceDialog.path': 'Absolute file path (JSON; created when missing)',
       'sourceDialog.readonly': 'Read-only (display only)',
@@ -162,6 +276,62 @@ window.__ModuleLoader__.load({
       'sourceDialog.noFiles': 'No .json / .md / .txt file in this directory',
       'sourceDialog.loading': 'Reading directory…',
       'sourceDialog.restartHint': ' (the Host does not expose this endpoint yet — usually a plugin update without a DSH restart: restart DSH, then refresh)',
+      'tabs.mine': 'My prompts',
+      'tabs.system': 'System prompts',
+      'tabs.plugin': 'Plugin prompts',
+      'tabs.settings': 'Settings',
+      'status.injectOn': '{count} injected',
+      'status.injectOff': 'Injection off',
+      'inject.title': 'Injection status',
+      'inject.hint': 'This plugin reads its prompts whenever DSH assembles the system prompt; changes apply from the next request. Turning it off stops all injection while management keeps working.',
+      'inject.on': 'Enabled',
+      'inject.off': 'Disabled',
+      'inject.enable': 'Enable injection',
+      'inject.disable': 'Disable injection',
+      'inject.rules': 'DSH reads this plugin\'s cached text while assembling the system prompt before every request (auto-refreshed within ~2s). Only your own prompts are appended as "## title + content" after the preamble; DSH sections and other plugins\' sections are injected by their owners and only shown and translated here.',
+      'inject.count': '{count} injected in this view',
+      'inject.disabledHint': 'Injection is disabled: none of these prompts reach the system prompt.',
+      'section.mine': 'My prompts',
+      'section.mineDesc': 'The built-in file and source files you added; create and add sources here.',
+      'section.system': 'System prompts',
+      'section.systemDesc': 'DSH first-party sections (identity, sources, web surface...). DSH already injects them; enabling one duplicates it.',
+      'section.plugin': 'Plugin prompts',
+      'section.pluginDesc': 'Prompt sections registered by third-party plugins; grouped by plugin with bulk switches.',
+      'section.systemEmpty': 'No system prompt section imported yet.',
+      'section.pluginEmpty': 'No plugin prompt section imported yet.',
+      'presetDefs.title': 'Prompt declarations inside each preset',
+      'presetDefs.hint': 'Read straight from the DSH agent preset declaration (agentPresets.readDocument), e.g. persona.prefix; no run required. Sections that preset actually registered at runtime are listed below, when captured. Read-only.',
+      'presetView.runtimeHead': 'Registered at runtime ({time})',
+      'presetDefs.empty': 'No preset declarations available in this profile (headless, or agentPresets disabled).',
+      'presetDefs.count': '{count} entries',
+      'presetDefs.none': 'no prompt declarations',
+      'translate.title': 'Translation',
+      'translate.target': 'Target language',
+      'translate.provider': 'Model provider (empty = first available)',
+      'translate.model': 'Model (empty = provider default)',
+      'translate.save': 'Save translation settings',
+      'translate.saved': 'Translation settings saved',
+      'translate.run': 'Translate',
+      'translate.running': 'Translating...',
+      'translate.done': 'Translated to {lang}',
+      'translate.skipped': 'Already in {lang}, nothing to translate',
+      'translate.failed': 'Translation failed: {message}',
+      'translate.clear': 'Clear translation',
+      'translate.showTranslation': 'Show translation',
+      'translate.showOriginal': 'Show original',
+      'translate.badge': 'Translation',
+      'translate.batch': 'Translate all ({count})',
+      'translate.batchDone': 'Translated {count}',
+      'translate.batchFailed': 'Translated {done}, failed {failed}: {message}',
+      'translate.hint': 'Translations live in state.json and never touch the source file. Turn on "inject translation" to send the translation instead of the source text.',
+      'translate.warning': 'Structure may differ: {detail}',
+      'prompt.injectSource': 'Inject source',
+      'prompt.injectTranslation': 'Inject translation',
+      'prompt.injectTranslationHint': 'Send this translation when injecting; turn off to inject the source text',
+      'translate.empty': 'Nothing to translate.',
+      'translate.llmHint': 'Calls the profile LLM service (prefers the configured provider).',
+      'translate.llmAvailable': 'Available model services: {providers}',
+      'translate.llmUnavailable': 'This profile has no LLM service; translation will fail.',
       'state.loading': 'Loading…',
       'state.saving': 'Saving…',
     }
@@ -192,7 +362,9 @@ window.__ModuleLoader__.load({
     const TYPERT_REMOTE = {
       package: '@local/prompt-manager',
       descriptors: [
-        descriptor('overview', []),
+        // `overview` takes the optional `{ preset }` view selector, so it must
+        // declare one request parameter even when the page calls it with `{}`.
+        descriptor('overview', [requestParam('overview')]),
         descriptor('create', [requestParam('create')]),
         descriptor('update', [requestParam('update')]),
         // `remove` collides with the Client namespace service's own member.
@@ -201,7 +373,15 @@ window.__ModuleLoader__.load({
         descriptor('removeSource', [requestParam('removeSource')]),
         descriptor('listDir', [requestParam('listDir')]),
         descriptor('importSystemPrompt', []),
+        descriptor('setPluginInject', [requestParam('setPluginInject')]),
+        descriptor('setPresetInject', [requestParam('setPresetInject')]),
         descriptor('setPreamble', [requestParam('setPreamble')]),
+        descriptor('setEnabled', [requestParam('setEnabled')]),
+        descriptor('reorder', [requestParam('reorder')]),
+        descriptor('translatePrompt', [requestParam('translatePrompt')]),
+        descriptor('clearTranslation', [requestParam('clearTranslation')]),
+        descriptor('setInjectTranslation', [requestParam('setInjectTranslation')]),
+        descriptor('setTranslationSettings', [requestParam('setTranslationSettings')]),
       ],
     }
 
@@ -264,13 +444,27 @@ window.__ModuleLoader__.load({
 .dshpm-inject-list li { word-break: break-all; }
 .dshpm-card { border: 0.5px solid var(--dsw-alias-border-l3); border-radius: var(--dsw-radius-md); background: var(--dsw-alias-bg-layer-1); padding: 12px 14px; }
 .dshpm-card + .dshpm-card { margin-top: 8px; }
+.dshpm-card[draggable="true"] { cursor: grab; }
+.dshpm-card[draggable="true"]:active { cursor: grabbing; }
+.dshpm-card--dragging { opacity: 0.45; }
+.dshpm-card--dragover { border-color: var(--dsw-alias-state-business-primary); }
 .dshpm-card-head { display: flex; align-items: center; gap: 8px; }
 .dshpm-card-title { font-weight: 600; flex: 1; word-break: break-all; }
 .dshpm-card-preview { color: var(--dsw-alias-label-secondary); margin: 6px 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-wrap; word-break: break-word; }
 .dshpm-card-foot { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
-.dshpm-card-meta { color: var(--dsw-alias-label-tertiary); font-size: 12px; flex: 1; }
+.dshpm-card-meta { color: var(--dsw-alias-label-secondary); font-size: 12px; flex: 1; }
 .dshpm-group { margin-bottom: 16px; }
 .dshpm-group-title { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--dsw-alias-label-secondary); margin: 0 0 8px; word-break: break-all; }
+/* Prompts imported from DSH are grouped again by the plugin that owns them. */
+.dshpm-subgroup { margin: 4px 0 12px 0; padding-left: 12px; border-left: 2px solid var(--dsw-alias-border-l3); }
+.dshpm-subgroup-title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--dsw-alias-label-secondary); margin: 0 0 8px; }
+.dshpm-plugin-list { display: flex; flex-direction: column; gap: 8px; }
+.dshpm-plugin { display: flex; align-items: center; gap: 8px; border: 0.5px solid var(--dsw-alias-border-l3); border-radius: var(--dsw-radius-md); background: var(--dsw-alias-bg-layer-1); padding: 8px 14px; }
+.dshpm-plugin--active { border-color: var(--dsw-alias-brand-primary); }
+.dshpm-plugin-name { font: inherit; font-weight: 600; color: inherit; background: none; border: none; padding: 0; cursor: pointer; }
+.dshpm-plugin-name:hover { text-decoration: underline; }
+.dshpm-plugin-meta { flex: 1; color: var(--dsw-alias-label-secondary); font-size: 12px; }
+.dshpm-plugin-actions { display: flex; gap: 6px; flex-shrink: 0; }
 .dshpm-notice { border: 0.5px solid var(--dsw-alias-state-success-primary); color: var(--dsw-alias-state-success-primary); border-radius: var(--dsw-radius-md); padding: 8px 14px; font-size: 13px; }
 .dshpm-error { border: 0.5px solid var(--dsw-alias-state-error-primary); color: var(--dsw-alias-state-error-primary); border-radius: var(--dsw-radius-md); padding: 10px 14px; word-break: break-word; font-size: 13px; white-space: pre-wrap; }
 .dshpm-empty { color: var(--dsw-alias-label-secondary); border: 0.5px dashed var(--dsw-alias-border-l3); border-radius: var(--dsw-radius-md); padding: 24px; text-align: center; }
@@ -290,9 +484,10 @@ window.__ModuleLoader__.load({
 .dshpm-row { display: flex; align-items: center; gap: 8px; }
 .dshpm-dialog-foot { display: flex; justify-content: flex-end; gap: 8px; }
 .dshpm-dialog-error { color: var(--dsw-alias-state-error-primary); font-size: 12.5px; line-height: 18px; word-break: break-word; }
-.dshpm-hint { color: var(--dsw-alias-label-tertiary); font-size: 12px; line-height: 18px; }
+.dshpm-hint { color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 18px; }
 
 /* Final injected text, exactly as the system-prompt section renders it. */
+.dshpm-preview-dock { margin-top: 10px; padding: 10px 12px; border: 0.5px solid var(--dsw-alias-border-l3); border-radius: var(--dsw-radius-md); background: var(--dsw-alias-bg-layer-1); }
 .dshpm-preview-head { display: flex; align-items: center; gap: 8px; }
 .dshpm-preview-head .dshpm-section-title { margin: 0; }
 .dshpm-preview-spacer { flex: 1; }
@@ -307,9 +502,40 @@ window.__ModuleLoader__.load({
 .dshpm-browser-row { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: none; background: transparent; color: var(--dsw-alias-label-primary); font-size: 13px; line-height: 20px; padding: 5px 12px; cursor: pointer; font-family: inherit; }
 .dshpm-browser-row:hover { background: var(--dsw-alias-interactive-bg-hover); }
 .dshpm-browser-row--file { color: var(--dsw-alias-label-secondary); }
-.dshpm-browser-empty { padding: 10px 12px; color: var(--dsw-alias-label-tertiary); font-size: 12.5px; }
+.dshpm-browser-empty { padding: 10px 12px; color: var(--dsw-alias-label-secondary); font-size: 12.5px; }
 .dshpm-browser-error { padding: 10px 12px; color: var(--dsw-alias-state-error-primary); font-size: 12.5px; line-height: 18px; word-break: break-word; }
 .dshpm-browser-block { display: flex; flex-direction: column; gap: 6px; }
+
+/* Tabs: one panel at a time keeps the page from growing without bound. */
+.dshpm-tabs { display: flex; gap: 2px; border-bottom: 0.5px solid var(--dsw-alias-border-l3); margin: 12px 0 4px; flex-wrap: wrap; }
+.dshpm-tab { appearance: none; font: inherit; font-size: 13px; line-height: 20px; padding: 6px 12px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--dsw-alias-label-secondary); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.dshpm-tab:hover { color: var(--dsw-alias-label-primary); }
+.dshpm-tab--active { color: var(--dsw-alias-label-primary); border-bottom-color: var(--dsw-alias-brand-primary); font-weight: 600; }
+.dshpm-tab-count { font-size: 11px; line-height: 16px; padding: 0 6px; border-radius: 999px; background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-secondary); }
+.dshpm-status { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 10px 0 0; padding: 8px 12px; border: 0.5px solid var(--dsw-alias-border-l3); border-radius: var(--dsw-radius-md); background: var(--dsw-alias-bg-layer-1); font-size: 12px; color: var(--dsw-alias-label-secondary); }
+.dshpm-status-label { flex: 1; }
+.dshpm-card-error { margin-top: 6px; font-size: 12px; line-height: 18px; color: var(--dsw-alias-state-error-primary); word-break: break-word; }
+.dshpm-tab-panel { margin-top: 10px; }
+.dshpm-preset-view { border-top: 1px solid var(--dsw-alias-border-l3); padding: 8px 0; }
+.dshpm-preset-view:first-of-type { border-top: 0; }
+.dshpm-preset-view > summary { cursor: pointer; display: flex; align-items: center; gap: 8px; list-style: none; }
+.dshpm-preset-view > summary::-webkit-details-marker { display: none; }
+.dshpm-preset-view > summary::before { content: '▸'; color: var(--dsw-alias-label-secondary); font-size: 11px; width: 10px; }
+.dshpm-preset-view[open] > summary::before { content: '▾'; }
+.dshpm-preset-name { font-size: 13px; font-weight: 600; }
+.dshpm-preset-section { margin-top: 12px; }
+.dshpm-preset-section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.dshpm-preset-section-head code { font-size: 12px; color: var(--dsw-alias-label-primary); }
+
+/* Zones: the three places a prompt can come from (mine / DSH / plugins). */
+.dshpm-zone { display: flex; flex-direction: column; }
+.dshpm-zone-head { display: flex; align-items: center; gap: 8px; }
+.dshpm-zone-head .dshpm-section-title { margin: 0; }
+.dshpm-zone .dshpm-group { margin-top: 6px; }
+/* A translated preview is shown in a different tone so it never reads like
+   the source text that actually goes into the system prompt. */
+.dshpm-card-translation { border-left: 2px solid var(--dsw-alias-state-business-primary); padding-left: 8px; color: var(--dsw-alias-label-secondary); }
+.dshpm-card-condition { color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 18px; margin-top: 6px; }
 
 `
 
@@ -357,9 +583,11 @@ window.__ModuleLoader__.load({
      * compares both sides.
      */
     function composeInjected(prompts, preamble) {
-      const active = prompts.filter((prompt) => prompt.inject)
+      // DSH sections are injected by their own plugin, so the preview must
+      // never count them even if an older state file still says inject: true.
+      const active = prompts.filter((prompt) => prompt.inject && prompt.injectable !== false)
       if (active.length === 0) return ''
-      const body = active.map((prompt) => `## ${prompt.title}\n\n${prompt.content}`)
+      const body = active.map((prompt) => `## ${prompt.title}\n\n${prompt.injectContent ?? prompt.content}`)
       const lead = preamble === undefined || preamble === null ? FALLBACK_PREAMBLE : preamble
       return lead === '' ? body.join('\n') : [lead, '', ...body].join('\n')
     }
@@ -380,16 +608,21 @@ window.__ModuleLoader__.load({
       const [sourceId, setSourceId] = useState(props.initial?.sourceId ?? 'internal')
       const [localError, setLocalError] = useState('')
       useEscape(props.onCancel, true)
-      // A text source holds one prompt whose title is its first heading, so it
-      // cannot host new prompts and its title is not editable.
-      const isText = props.initial?.editableTitle === false
+      // A text source holds exactly one prompt and cannot host new ones, but
+      // its displayed title is an override kept by the Host (never written to
+      // the file), so it is editable like any other title.
+      const isText = props.initial?.kind === 'text'
+      const defaultTitle = props.initial?.defaultTitle ?? ''
       const writable = sources.filter((s) => !s.readonly && s.kind !== 'text')
       const save = () => {
-        if (!isText && !title.trim()) {
+        const trimmed = title.trim()
+        // Clearing a text source's title restores the file's heading; a JSON
+        // prompt has no fallback, so an empty title there is an error.
+        if (!isText && !trimmed) {
           setLocalError(t('editor.titleRequired'))
           return
         }
-        props.onSave({ title: title.trim(), content, inject, sourceId })
+        props.onSave({ title: trimmed, content, inject, sourceId })
       }
       return h('div', { className: 'dshpm-overlay', onMouseDown: (e) => { if (e.target === e.currentTarget) props.onCancel() } },
         h('div', { className: 'dshpm-dialog', role: 'dialog', 'aria-modal': 'true' },
@@ -401,16 +634,21 @@ window.__ModuleLoader__.load({
               value: sourceId,
               onChange: (e) => setSourceId(e.target.value),
             }, writable.map((s) => h('option', { key: s.id, value: s.id }, s.path)))),
-          isText
-            ? h('p', { className: 'dshpm-hint' }, t('editor.textTitleHint'))
-            : h('label', { className: 'dshpm-field' },
-                h('span', { className: 'dshpm-field-label' }, t('editor.fieldTitle')),
-                h('input', {
-                  className: 'dshpm-input',
-                  value: title,
-                  autoFocus: true,
-                  onChange: (e) => setTitle(e.target.value),
-                })),
+          h('label', { className: 'dshpm-field' },
+            h('span', { className: 'dshpm-field-label' }, t('editor.fieldTitle')),
+            h('div', { className: 'dshpm-row' },
+              h('input', {
+                className: 'dshpm-input',
+                value: title,
+                autoFocus: true,
+                placeholder: defaultTitle,
+                onChange: (e) => setTitle(e.target.value),
+              }),
+              defaultTitle !== '' && h(Button, {
+                outline: true,
+                onClick: () => setTitle(defaultTitle),
+              }, t('editor.resetTitle')))),
+          h('p', { className: 'dshpm-hint' }, isText ? t('editor.textTitleHint') : t('editor.titleHint')),
           h('label', { className: 'dshpm-field' },
             h('span', { className: 'dshpm-field-label' }, t('editor.fieldContent')),
             h('textarea', {
@@ -424,7 +662,9 @@ window.__ModuleLoader__.load({
               checked: inject,
               onChange: (e) => setInject(e.target.checked),
             }),
-            t('editor.fieldInject')),
+            props.presetName
+              ? t('editor.fieldInjectPreset', { name: props.presetName })
+              : t('editor.fieldInject')),
           (localError || props.error) && h('div', { className: 'dshpm-dialog-error' }, localError || props.error),
           h('div', { className: 'dshpm-dialog-foot' },
             h(Button, { onClick: props.onCancel, disabled: props.saving }, t('editor.cancel')),
@@ -530,36 +770,119 @@ window.__ModuleLoader__.load({
     function PromptCard(props) {
       const { t, prompt } = props
       const [confirming, setConfirming] = useState(false)
+      const [showTranslation, setShowTranslation] = useState(false)
       useEffect(() => {
         if (!confirming) return undefined
         const timer = setTimeout(() => setConfirming(false), 3000)
         return () => clearTimeout(timer)
       }, [confirming])
+      const translation = prompt.translation
+      const shownContent = showTranslation && translation ? translation.text : prompt.content
       const updated = prompt.updatedAt ? new Date(prompt.updatedAt).toLocaleString() : ''
-      const injectChip = h('button', {
+      // Sections imported from DSH are injected by the plugin that registered
+      // them; this panel shows and translates them but never offers a switch.
+      const injectable = prompt.injectable !== false
+      const injectChip = injectable && h('button', {
         type: 'button',
         className: `dshpm-toggle${prompt.inject ? ' dshpm-toggle--on' : ''}`,
         disabled: props.busy || prompt.readonly,
         title: t('prompt.inject.hint'),
         onClick: () => props.onToggleInject(prompt),
       }, prompt.inject ? t('prompt.inject.on') : t('prompt.inject.off'))
+      // A preset view marks prompts whose flag was decided for this preset;
+      // "inherit" drops the override and follows the global flag again.
+      const overridden = injectable && props.presetView !== null && prompt.presetOverride !== null
+      const overrideChip = overridden && h('button', {
+        type: 'button',
+        className: `dshpm-toggle${prompt.inject ? ' dshpm-toggle--on' : ''}`,
+        disabled: props.busy || prompt.readonly,
+        title: prompt.inject ? t('preset.overrideOn') : t('preset.overrideOff'),
+        onClick: () => props.onClearOverride(prompt),
+      }, t('preset.inherit'))
+      const translationChip = translation
+        ? h(Button, {
+            outline: true,
+            disabled: props.busy,
+            onClick: () => setShowTranslation((value) => !value),
+          }, showTranslation ? t('translate.showOriginal') : t('translate.showTranslation'))
+        : null
+      const translationInjectChip = translation && injectable && h('button', {
+        type: 'button',
+        className: `dshpm-toggle${prompt.injectTranslation ? ' dshpm-toggle--on' : ''}`,
+        disabled: props.busy,
+        title: t('prompt.injectTranslationHint'),
+        onClick: () => props.onToggleTranslation(prompt),
+      }, prompt.injectTranslation ? t('prompt.injectTranslation') : t('prompt.injectSource'))
       const openEditor = prompt.readonly ? undefined : () => props.onEdit(prompt)
-      return h('div', { className: 'dshpm-card' },
+      const originLabel = prompt.pluginLabel ?? prompt.plugin ?? 'DSH'
+      const showcase = prompt.injectable === false
+      const conditionArgs = {
+        plugin: originLabel,
+        section: prompt.sectionName ?? prompt.title,
+        order: prompt.condition?.order ?? '?',
+      }
+      const conditionText = !prompt.condition
+        ? ''
+        : (showcase
+          ? (prompt.condition.registered
+            ? t('prompt.condition', conditionArgs)
+            : t('prompt.conditionMissing', conditionArgs))
+          : t('prompt.conditionManaged', conditionArgs))
+      const dragClass = `${props.dragging ? ' dshpm-card--dragging' : ''}${props.dragover ? ' dshpm-card--dragover' : ''}`
+      return h('div', {
+        className: `dshpm-card${dragClass}`,
+        draggable: props.reorderable === true,
+        title: props.reorderable === true ? t('prompt.dragHint') : undefined,
+        onDragStart: props.reorderable === true ? (event) => props.onDragStart(prompt, event) : undefined,
+        onDragOver: props.reorderable === true ? (event) => props.onDragOver(prompt, event) : undefined,
+        onDrop: props.reorderable === true ? (event) => props.onDrop(prompt, event) : undefined,
+        onDragEnd: props.reorderable === true ? () => props.onDragEnd() : undefined,
+      },
         h('div', { className: 'dshpm-card-head' },
           h('span', {
             className: `dshpm-card-title${openEditor ? ' dshpm-clickable' : ''}`,
             title: openEditor ? t('prompt.editHint') : undefined,
             onClick: openEditor,
           }, prompt.title),
-          prompt.origin === 'dsh-system-prompt' && h(Badge, null, t('prompt.originDsh')),
-          injectChip),
-        prompt.content && h('p', {
-          className: `dshpm-card-preview${openEditor ? ' dshpm-clickable' : ''}`,
+          prompt.plugin && h(Badge, null, prompt.pluginLabel ?? prompt.plugin),
+          prompt.titleCustom && h(Badge, null, t('prompt.titleCustom')),
+          translation && h(Badge, null, t('translate.badge')),
+          prompt.origin === 'dsh-system-prompt' && !prompt.plugin && h(Badge, null, t('prompt.originDsh')),
+          injectable
+            ? [injectChip, overrideChip]
+            : h(Badge, null, t('prompt.injectedBy', { plugin: originLabel }))),
+        shownContent && h('p', {
+          className: `dshpm-card-preview${openEditor ? ' dshpm-clickable' : ''}${showTranslation ? ' dshpm-card-translation' : ''}`,
           title: openEditor ? t('prompt.editHint') : undefined,
           onClick: openEditor,
-        }, prompt.content),
+        }, shownContent),
+        conditionText && h('div', { className: 'dshpm-card-condition' }, conditionText),
+        translation && Array.isArray(translation.warnings) && translation.warnings.length > 0
+          && h('div', { className: 'dshpm-card-condition' }, t('translate.warning', { detail: translation.warnings.join('; ') })),
+        props.translateError && h('div', { className: 'dshpm-card-error' }, t('translate.failed', { message: props.translateError })),
         h('div', { className: 'dshpm-card-foot' },
           h('span', { className: 'dshpm-card-meta' }, updated ? t('prompt.updated', { time: updated }) : ''),
+          // Translation never writes the source, so it stays available even
+          // for read-only entries; only editing and deleting follow `readonly`.
+          translationChip,
+          translationInjectChip,
+          h(Button, {
+            key: 'translate',
+            outline: true,
+            disabled: props.busy || props.translating || !prompt.content,
+            onClick: async () => {
+              // A successful translation switches to the translated view, so
+              // the click visibly changes the card instead of only adding a badge.
+              const visible = await props.onTranslate(prompt)
+              if (visible) setShowTranslation(true)
+            },
+          }, props.translating ? t('translate.running') : t('translate.run')),
+          translation && h(Button, {
+            key: 'clearTranslation',
+            outline: true,
+            disabled: props.busy,
+            onClick: () => props.onClearTranslation(prompt),
+          }, t('translate.clear')),
           prompt.readonly
             ? h(Badge, null, t('prompt.readonly'))
             : [
@@ -608,32 +931,70 @@ window.__ModuleLoader__.load({
 
     function PromptManagerPage(props) {
       const { t, api } = props
-      const [state, setState] = useState({ loading: true, error: '', sources: [], prompts: [] })
+      const [state, setState] = useState({
+        loading: true,
+        error: '',
+        sources: [],
+        prompts: [],
+        plugins: [],
+        presets: [],
+        enabled: true,
+        translation: { targetLanguage: 'zh-CN', provider: '', model: '' },
+        languages: [],
+        llm: { available: false, providers: [] },
+        presetViews: [],
+        presetDefinitions: [],
+      })
       const [editor, setEditor] = useState(null)
       const [sourceDialog, setSourceDialog] = useState(null)
       const [busy, setBusy] = useState(false)
       const [actionError, setActionError] = useState('')
       const [notice, setNotice] = useState('')
       const [preambleDraft, setPreambleDraft] = useState(null)
-      const [previewOpen, setPreviewOpen] = useState(false)
+      const [previewOpen, setPreviewOpen] = useState(true)
       const [copied, setCopied] = useState(false)
+      const [pluginFilter, setPluginFilter] = useState(null)
+      const [dragKey, setDragKey] = useState('')
+      const [dragOverKey, setDragOverKey] = useState('')
+      // `null` is the global view; any other value manages that preset's
+      // overrides. The Host answers with the flags seen from this view.
+      const [presetView, setPresetView] = useState(null)
+      const [translationDraft, setTranslationDraft] = useState(null)
+      const [translatingKey, setTranslatingKey] = useState('')
+      const [batchTranslating, setBatchTranslating] = useState(false)
+      // The panel keeps one tab visible; `settings` holds the rarer knobs.
+      const [tab, setTab] = useState('mine')
+      // `{ key, message }` for the last failed translation so the card itself
+      // can say why nothing changed.
+      const [translateError, setTranslateError] = useState(null)
 
       const refresh = useCallback(async () => {
         try {
-          const data = await unwrap(api().overview())
+          const data = await unwrap(api().overview(presetView === null ? {} : { preset: presetView }))
           setState({
             loading: false,
             error: '',
             sources: data.sources ?? [],
             prompts: data.prompts ?? [],
             preamble: data.preamble ?? '',
+            plugins: data.plugins ?? [],
+            presets: data.presets ?? [],
+            enabled: data.enabled !== false,
+            translation: data.translation ?? { targetLanguage: 'zh-CN', provider: '', model: '' },
+            languages: data.languages ?? [],
+            llm: data.llm ?? { available: false, providers: [] },
+            presetViews: data.presetViews ?? [],
+            presetDefinitions: data.presetDefinitions ?? [],
           })
           setPreambleDraft((previous) => (previous === null ? (data.preamble ?? '') : previous))
+          setTranslationDraft((previous) => (previous === null
+            ? (data.translation ?? { targetLanguage: 'zh-CN', provider: '', model: '' })
+            : previous))
         } catch (error) {
           console.error('[prompt-manager] overview failed', error)
           setState((prev) => ({ ...prev, loading: false, error: error?.message ?? String(error) }))
         }
-      }, [api])
+      }, [api, presetView])
 
       useEffect(() => {
         refresh()
@@ -643,9 +1004,9 @@ window.__ModuleLoader__.load({
         setBusy(true)
         setActionError('')
         try {
-          await operation()
+          const value = await operation()
           await refresh()
-          return true
+          return value === undefined ? true : value
         } catch (error) {
           console.error('[prompt-manager] operation failed', error)
           // Never fail silently: a swallowed error looks like an unresponsive UI.
@@ -656,10 +1017,17 @@ window.__ModuleLoader__.load({
         }
       }, [refresh])
 
-      const injected = useMemo(() => state.prompts.filter((prompt) => prompt.inject), [state.prompts])
+      // A disabled plugin injects nothing, so the preview must show nothing
+      // rather than the flags that would apply once it is enabled again.
+      const injected = useMemo(
+        () => (state.enabled === false
+          ? []
+          : state.prompts.filter((prompt) => prompt.injectable !== false && prompt.inject)),
+        [state.prompts, state.enabled],
+      )
       const injectedText = useMemo(
-        () => composeInjected(state.prompts, state.preamble),
-        [state.prompts, state.preamble],
+        () => (state.enabled === false ? '' : composeInjected(state.prompts, state.preamble)),
+        [state.prompts, state.preamble, state.enabled],
       )
 
       const savePreamble = useCallback(async (text) => {
@@ -679,17 +1047,240 @@ window.__ModuleLoader__.load({
         }
       }, [api, refresh, t])
 
-      const groups = useMemo(() => {
+      const toggleInjection = useCallback(async () => {
+        await run(() => unwrap(api().setEnabled({ enabled: !state.enabled })))
+        setNotice(t(state.enabled ? 'inject.off' : 'inject.on'))
+        setTimeout(() => setNotice(''), 3000)
+      }, [api, run, state.enabled, t])
+
+      const saveTranslationSettings = useCallback(async (values) => {
+        await run(() => unwrap(api().setTranslationSettings(values)))
+        setNotice(t('translate.saved'))
+        setTimeout(() => setNotice(''), 3000)
+      }, [api, run, t])
+
+      const untranslatedCount = useMemo(
+        () => state.prompts.filter((prompt) => !prompt.translation && prompt.content).length,
+        [state.prompts],
+      )
+
+      // Batch translation runs one request per prompt so a single failure keeps
+      // the rest and the page can report how many made it.
+      const translateAll = useCallback(async () => {
+        setBatchTranslating(true)
+        setActionError('')
+        let done = 0
+        let failed = 0
+        let firstError = ''
+        try {
+          for (const prompt of state.prompts) {
+            if (prompt.translation || !prompt.content) continue
+            try {
+              await unwrap(api().translatePrompt({ key: prompt.key }))
+              done += 1
+            } catch (error) {
+              failed += 1
+              if (!firstError) firstError = error?.message ?? String(error)
+              console.error('[prompt-manager] batch translation failed for', prompt.key, error)
+            }
+          }
+          await refresh()
+          if (failed > 0) {
+            setActionError(t('translate.batchFailed', { done: String(done), failed: String(failed), message: firstError }))
+          } else {
+            setNotice(t('translate.batchDone', { count: String(done) }))
+            setTimeout(() => setNotice(''), 4000)
+          }
+        } finally {
+          setBatchTranslating(false)
+        }
+      }, [api, refresh, state.prompts, t])
+
+      const importDsh = useCallback(async () => {
+        setBusy(true)
+        setActionError('')
+        try {
+          const value = await unwrap(api().importSystemPrompt())
+          await refresh()
+          setNotice(t('action.imported', { count: String(value?.imported ?? 0) }))
+          setTimeout(() => setNotice(''), 4000)
+        } catch (error) {
+          console.error('[prompt-manager] import failed', error)
+          setActionError(withRestartHint(error?.message ?? String(error), t))
+        } finally {
+          setBusy(false)
+        }
+      }, [api, refresh, t])
+
+      // Filtering by plugin (chosen in the plugin panel) narrows the list. The
+      // prompts are then split into the three zones a prompt can come from:
+      // your own files, DSH first-party sections, and third-party plugin
+      // sections; inside a zone they group by source and then by plugin.
+      const visiblePrompts = useMemo(
+        () => (pluginFilter ? state.prompts.filter((prompt) => prompt.plugin === pluginFilter) : state.prompts),
+        [state.prompts, pluginFilter],
+      )
+      const zones = useMemo(() => {
+        const result = { mine: [], system: [], plugin: [] }
+        for (const prompt of visiblePrompts) {
+          const zone = !prompt.plugin ? 'mine' : (prompt.builtin === true ? 'system' : 'plugin')
+          result[zone].push(prompt)
+        }
+        return result
+      }, [visiblePrompts])
+      const buildGroups = useCallback((prompts) => {
         const bySource = new Map()
-        for (const prompt of state.prompts) {
+        for (const prompt of prompts) {
           const list = bySource.get(prompt.sourceId) ?? []
           list.push(prompt)
           bySource.set(prompt.sourceId, list)
         }
         return state.sources
-          .map((source) => ({ source, prompts: bySource.get(source.id) ?? [] }))
-          .filter((group) => group.prompts.length > 0)
-      }, [state])
+          .map((source) => {
+            const byPlugin = new Map()
+            for (const prompt of bySource.get(source.id) ?? []) {
+              const id = prompt.plugin ?? ''
+              const bucket = byPlugin.get(id) ?? {
+                id,
+                label: id === '' ? t('plugin.untitled') : (prompt.pluginLabel ?? id),
+                builtin: prompt.builtin === true,
+                prompts: [],
+              }
+              bucket.prompts.push(prompt)
+              byPlugin.set(id, bucket)
+            }
+            return { source, buckets: [...byPlugin.values()] }
+          })
+          .filter((group) => group.buckets.length > 0)
+      }, [state.sources, t])
+      const groups = useMemo(() => ({
+        mine: buildGroups(zones.mine),
+        system: buildGroups(zones.system),
+        plugin: buildGroups(zones.plugin),
+      }), [buildGroups, zones])
+
+      const movePrompt = useCallback(async (fromKey, toKey) => {
+        const keys = state.prompts.map((entry) => entry.key)
+        const from = keys.indexOf(fromKey)
+        const to = keys.indexOf(toKey)
+        if (from < 0 || to < 0 || from === to) return
+        const next = keys.slice()
+        next.splice(from, 1)
+        next.splice(to, 0, fromKey)
+        await run(() => unwrap(api().reorder({ keys: next })))
+      }, [api, run, state.prompts])
+
+      const renderCard = (prompt) => h(PromptCard, {
+        key: prompt.key,
+        t,
+        prompt,
+        busy,
+        presetView,
+        translating: translatingKey === prompt.key,
+        translateError: translateError?.key === prompt.key ? translateError.message : '',
+        reorderable: true,
+        dragging: dragKey === prompt.key,
+        dragover: dragOverKey === prompt.key,
+        onDragStart: (target, event) => {
+          if (event?.dataTransfer?.setData) event.dataTransfer.setData('text/plain', target.key)
+          setDragKey(target.key)
+        },
+        onDragOver: (target, event) => {
+          if (event?.preventDefault) event.preventDefault()
+          if (dragOverKey !== target.key) setDragOverKey(target.key)
+        },
+        onDrop: (target, event) => {
+          if (event?.preventDefault) event.preventDefault()
+          const from = dragKey
+          setDragKey('')
+          setDragOverKey('')
+          if (from && from !== target.key) movePrompt(from, target.key)
+        },
+        onDragEnd: () => {
+          setDragKey('')
+          setDragOverKey('')
+        },
+        onEdit: (target) => setEditor({ initial: target }),
+        onToggleInject: async (target) => {
+          if (presetView === null) {
+            await run(() => unwrap(api().update({ key: target.key, inject: !target.inject })))
+          } else {
+            await run(() => unwrap(api().setPresetInject({
+              preset: presetView,
+              key: target.key,
+              inject: !target.inject,
+            })))
+          }
+        },
+        onClearOverride: async (target) => {
+          await run(() => unwrap(api().setPresetInject({
+            preset: presetView,
+            key: target.key,
+            inject: null,
+          })))
+        },
+        onTranslate: async (target) => {
+          setTranslatingKey(target.key)
+          setTranslateError(null)
+          try {
+            const value = await run(() => unwrap(api().translatePrompt({ key: target.key })))
+            if (value instanceof Error) {
+              setTranslateError({ key: target.key, message: value.message ?? String(value) })
+              return false
+            }
+            const skipped = value && value.skipped === true
+            setNotice(skipped
+              ? t('translate.skipped', { lang: state.translation?.targetLanguage ?? '' })
+              : t('translate.done', { lang: state.translation?.targetLanguage ?? '' }))
+            setTimeout(() => setNotice(''), 3000)
+            return !skipped
+          } finally {
+            setTranslatingKey('')
+          }
+        },
+        onClearTranslation: async (target) => {
+          await run(() => unwrap(api().clearTranslation({ key: target.key })))
+        },
+        onToggleTranslation: async (target) => {
+          await run(() => unwrap(api().setInjectTranslation({ key: target.key, enabled: target.injectTranslation !== true })))
+        },
+        onDelete: async (target) => {
+          await run(() => unwrap(api().delete({ key: target.key })))
+        },
+      })
+
+      const tabs = [
+        { id: 'mine', label: t('tabs.mine'), count: zones.mine.length },
+        { id: 'system', label: t('tabs.system'), count: zones.system.length },
+        { id: 'plugin', label: t('tabs.plugin'), count: zones.plugin.length },
+        { id: 'settings', label: t('tabs.settings'), count: null },
+      ]
+
+      // One zone = a heading, its explanation, its optional actions, then the
+      // source→plugin groups. Zones stay visible even when empty so the user
+      // can tell "nothing imported yet" from "filtered out".
+      const renderZone = (title, description, zone, actions, emptyText) => h('div', { className: 'dshpm-zone' },
+        h('div', { className: 'dshpm-zone-head' },
+          h('h4', { className: 'dshpm-section-title' }, title),
+          h('span', { className: 'dshpm-preview-spacer' }),
+          actions),
+        h('p', { className: 'dshpm-hint', style: { margin: '0 0 8px' } }, description),
+        zone.length === 0
+          ? h('div', { className: 'dshpm-empty' }, emptyText)
+          : zone.map((group) => h('div', { key: group.source.id, className: 'dshpm-group' },
+              h('p', { className: 'dshpm-group-title' }, group.source.path),
+              group.buckets.map((bucket) => h('div', {
+                key: bucket.id || 'own',
+                className: 'dshpm-subgroup',
+              },
+                h('p', { className: 'dshpm-subgroup-title' },
+                  h('span', null, bucket.label),
+                  bucket.builtin && h(Badge, null, t('plugin.builtin')),
+                  h(Badge, null, t('plugin.injected', {
+                    injected: String(bucket.prompts.filter((prompt) => prompt.inject).length),
+                    count: String(bucket.prompts.length),
+                  }))),
+                bucket.prompts.map(renderCard))))))
 
       return h('div', { className: 'dshpm-page' },
         h('style', null, css),
@@ -699,44 +1290,21 @@ window.__ModuleLoader__.load({
               h('h2', { className: 'dshpm-title' }, t('panel.title')),
               h('p', { className: 'dshpm-subtitle' }, t('header.subtitle'))),
             h('div', { className: 'dshpm-actions' },
-              h(Button, { outline: true, onClick: refresh, disabled: busy }, t('action.refresh')),
-              h(Button, {
-                outline: true,
-                disabled: busy,
-                title: t('action.importDshHint'),
-                onClick: async () => {
-                  setBusy(true)
-                  setActionError('')
-                  try {
-                    const value = await unwrap(api().importSystemPrompt())
-                    await refresh()
-                    setNotice(t('action.imported', { count: String(value?.imported ?? 0) }))
-                    setTimeout(() => setNotice(''), 4000)
-                  } catch (error) {
-                    console.error('[prompt-manager] import failed', error)
-                    setActionError(withRestartHint(error?.message ?? String(error), t))
-                  } finally {
-                    setBusy(false)
-                  }
-                },
-              }, t('action.importDsh')),
-              h(Button, { outline: true, onClick: () => setSourceDialog({}), disabled: busy }, t('action.addSource')),
-              h(Button, { primary: true, onClick: () => setEditor({}), disabled: busy }, t('action.new')))),
+              h(Button, { outline: true, onClick: refresh, disabled: busy }, t('action.refresh')))),
           (actionError || state.error) && h('div', { className: 'dshpm-error' }, actionError || state.error),
           notice && h('div', { className: 'dshpm-notice' }, notice),
-          h('section', null,
-            h('h4', { className: 'dshpm-section-title' }, t('sources.title')),
-            state.sources.length === 0 && !state.loading && h('div', { className: 'dshpm-empty' }, t('sources.empty')),
-            state.sources.map((source) => h(SourceRow, {
-              key: source.id,
-              t,
-              source,
-              busy,
-              onRemove: async (target) => {
-                await run(() => unwrap(api().removeSource({ id: target.id })))
-              },
-            }))),
-          h('section', null,
+          h('div', { className: 'dshpm-status' },
+            h(Badge, { kind: state.enabled ? 'inject' : undefined }, state.enabled ? t('inject.on') : t('inject.off')),
+            h('span', { className: 'dshpm-status-label' },
+              state.enabled ? t('status.injectOn', { count: String(injected.length) }) : t('status.injectOff')),
+            h(Button, {
+              outline: true,
+              danger: state.enabled,
+              primary: state.enabled === false,
+              disabled: busy,
+              onClick: toggleInjection,
+            }, state.enabled ? t('inject.disable') : t('inject.enable'))),
+          h('section', { className: 'dshpm-preview-dock' },
             h('div', { className: 'dshpm-preview-head' },
               h('h4', { className: 'dshpm-section-title' }, t('preview.title')),
               h(Badge, { kind: injected.length > 0 ? 'inject' : undefined }, t('preview.count', { count: String(injected.length) })),
@@ -779,48 +1347,221 @@ window.__ModuleLoader__.load({
                 h('p', { className: 'dshpm-hint', style: { margin: '8px 0 0' } }, t('preview.sources')),
                 h('ul', { className: 'dshpm-inject-list' },
                   injected.map((prompt) => h('li', { key: prompt.key }, `${prompt.title} — ${prompt.sourcePath}`)))))),
-          h('section', null,
-            h('h4', { className: 'dshpm-section-title' }, t('prompts.title')),
-            h('p', { className: 'dshpm-hint', style: { margin: '0 0 8px' } }, t('prompts.injectHint')),
-            state.loading
-              ? h('div', { className: 'dshpm-empty' }, t('state.loading'))
-              : groups.length === 0
-                ? h('div', { className: 'dshpm-empty' },
-                    h('div', null, t('prompts.empty')),
-                    h('div', { className: 'dshpm-hint', style: { marginTop: '8px' } },
-                      t('prompts.emptyPath', { path: state.sources[0]?.path ?? '' })))
-                : groups.map((group) => h('div', { key: group.source.id, className: 'dshpm-group' },
-                    h('p', { className: 'dshpm-group-title' }, group.source.path),
-                    group.prompts.map((prompt) => h(PromptCard, {
-                      key: prompt.key,
-                      t,
-                      prompt,
-                      busy,
-                      onEdit: (target) => setEditor({ initial: target }),
-                      onToggleInject: async (target) => {
-                        await run(() => unwrap(api().update({ key: target.key, inject: !target.inject })))
-                      },
-                      onDelete: async (target) => {
-                        await run(() => unwrap(api().delete({ key: target.key })))
-                      },
-                    })))))),
+          h('div', { className: 'dshpm-tabs' },
+            tabs.map((entry) => h('button', {
+              key: entry.id,
+              type: 'button',
+              className: `dshpm-tab${tab === entry.id ? ' dshpm-tab--active' : ''}`,
+              onClick: () => setTab(entry.id),
+            }, entry.label, entry.count === null ? null : h('span', { className: 'dshpm-tab-count' }, String(entry.count))))),
+          tab === 'settings' && h('section', { className: 'dshpm-tab-panel' },
+            h('h4', { className: 'dshpm-section-title' }, t('inject.title')),
+            h('p', { className: 'dshpm-hint', style: { margin: '6px 0 0' } }, t('inject.hint')),
+            h('p', { className: 'dshpm-hint', style: { margin: '4px 0 0' } }, t('inject.rules')),
+            h('p', { className: 'dshpm-hint', style: { margin: '4px 0 0' } },
+              state.enabled ? t('inject.count', { count: String(injected.length) }) : t('inject.disabledHint'))),
+          tab === 'settings' && h('section', null,
+            h('h4', { className: 'dshpm-section-title' }, t('sources.title')),
+            state.sources.length === 0 && !state.loading && h('div', { className: 'dshpm-empty' }, t('sources.empty')),
+            state.sources.map((source) => h(SourceRow, {
+              key: source.id,
+              t,
+              source,
+              busy,
+              onRemove: async (target) => {
+                await run(() => unwrap(api().removeSource({ id: target.id })))
+              },
+            }))),
+          tab === 'plugin' && h('section', { className: 'dshpm-tab-panel' },
+            h('h4', { className: 'dshpm-section-title' }, t('plugin.title')),
+            h('p', { className: 'dshpm-hint', style: { margin: '0 0 8px' } }, t('plugin.hint')),
+            state.plugins.length === 0
+              ? (state.loading ? null : h('div', { className: 'dshpm-empty' }, t('plugin.empty')))
+              : h('div', { className: 'dshpm-plugin-list' },
+                  state.plugins.map((plugin) => h('div', {
+                    key: plugin.id,
+                    className: `dshpm-plugin${pluginFilter === plugin.id ? ' dshpm-plugin--active' : ''}`,
+                  },
+                    h('button', {
+                      type: 'button',
+                      className: 'dshpm-plugin-name',
+                      onClick: () => setPluginFilter((current) => (current === plugin.id ? null : plugin.id)),
+                    }, plugin.label),
+                    plugin.builtin && h(Badge, null, t('plugin.builtin')),
+                    h('span', { className: 'dshpm-plugin-meta' },
+                      t('plugin.count', { count: String(plugin.count) }))))),
+            pluginFilter !== null && h('div', { className: 'dshpm-row', style: { marginTop: '8px' } },
+              h(Button, { outline: true, onClick: () => setPluginFilter(null) }, t('plugin.filterOff')))),
+          tab === 'settings' && h('section', null,
+            h('h4', { className: 'dshpm-section-title' }, t('preset.title')),
+            h('p', { className: 'dshpm-hint', style: { margin: '0 0 8px' } }, t('preset.hint')),
+            state.presets.length === 0
+              ? (state.loading ? null : h('div', { className: 'dshpm-empty' }, t('preset.empty')))
+              : h('div', { className: 'dshpm-plugin-list' },
+                  [{ id: null, name: t('preset.global'), default: true, overridden: 0, broken: false }]
+                    .concat(state.presets)
+                    .map((preset) => h('div', {
+                      key: preset.id === null ? '__global' : preset.id,
+                      className: `dshpm-plugin${presetView === preset.id ? ' dshpm-plugin--active' : ''}`,
+                    },
+                      h('button', {
+                        type: 'button',
+                        className: 'dshpm-plugin-name',
+                        onClick: () => setPresetView(preset.id),
+                      }, preset.name || preset.id),
+                      preset.id !== null && preset.default && h(Badge, null, t('preset.default')),
+                      preset.broken && h(Badge, null, t('preset.broken')),
+                      h('span', { className: 'dshpm-plugin-meta' },
+                        preset.id === null
+                          ? ''
+                          : t('preset.overridden', { count: String(preset.overridden ?? 0) })))))),
+          presetView !== null && h('p', { className: 'dshpm-hint', style: { margin: '8px 0 0' } },
+            t('preset.active', { name: (state.presets.find((p) => p.id === presetView) ?? {}).name || presetView })),
+          tab === 'settings' && h('section', { className: 'dshpm-tab-panel' },
+            h('h4', { className: 'dshpm-section-title' }, t('presetDefs.title')),
+            h('p', { className: 'dshpm-hint', style: { margin: '0 0 8px' } }, t('presetDefs.hint')),
+            state.presetDefinitions.length === 0 && h('div', { className: 'dshpm-empty' }, t('presetDefs.empty')),
+            state.presetDefinitions.map((definition) => {
+              const view = state.presetViews.find((candidate) => candidate.preset === definition.preset)
+              const runtime = view?.sections ?? []
+              const total = definition.entries.length + runtime.length
+              return h('details', {
+                key: 'def-' + definition.preset,
+                className: 'dshpm-preset-view',
+                open: presetView === definition.preset,
+              },
+                h('summary', null,
+                  h('span', { className: 'dshpm-preset-name' }, definition.presetName || definition.preset),
+                  total === 0
+                    ? h(Badge, null, t('presetDefs.none'))
+                    : h(Badge, null, t('presetDefs.count', { count: String(total) }))),
+                definition.entries.map((entry) => h('div', {
+                  key: 'decl-' + (entry.entryId || entry.moduleName || 'entry'),
+                  className: 'dshpm-preset-section',
+                },
+                  h('div', { className: 'dshpm-preset-section-head' },
+                    h('code', null, entry.moduleName || entry.entryId || '?'),
+                    entry.entryId && h('span', { className: 'dshpm-hint' }, entry.entryId)),
+                  entry.texts.map((item) => h('pre', {
+                    key: item.key,
+                    className: 'dshpm-preview',
+                  }, item.key + ':\n' + item.value)))),
+                runtime.length > 0 && h('p', { className: 'dshpm-preset-section-head' },
+                  t('presetView.runtimeHead', { time: new Date(view.at).toLocaleString() })),
+                runtime.map((section) => h('div', {
+                  key: 'run-' + section.name,
+                  className: 'dshpm-preset-section',
+                },
+                  h('div', { className: 'dshpm-preset-section-head' },
+                    h('code', null, section.name),
+                    section.order !== null && h('span', { className: 'dshpm-hint' }, 'order ' + section.order),
+                    h('span', { className: 'dshpm-hint' }, section.pluginLabel ?? section.plugin)),
+                  h('pre', { className: 'dshpm-preview' }, section.text))))
+            })),
+          tab === 'settings' && h('section', { className: 'dshpm-tab-panel' },
+            h('div', { className: 'dshpm-zone-head' },
+              h('h4', { className: 'dshpm-section-title' }, t('translate.title')),
+              h('span', { className: 'dshpm-preview-spacer' }),
+              h(Button, {
+                outline: true,
+                disabled: busy || batchTranslating || untranslatedCount === 0,
+                onClick: translateAll,
+              }, batchTranslating
+                ? t('translate.running')
+                : t('translate.batch', { count: String(untranslatedCount) }))),
+            h('p', { className: 'dshpm-hint', style: { margin: '0 0 8px' } }, t('translate.hint')),
+            h('div', { className: 'dshpm-row', style: { alignItems: 'flex-end', marginTop: '4px' } },
+              h('label', { className: 'dshpm-field', style: { margin: 0 } },
+                h('span', { className: 'dshpm-field-label' }, t('translate.target')),
+                h('select', {
+                  className: 'dshpm-input',
+                  value: (translationDraft ?? state.translation)?.targetLanguage ?? 'zh-CN',
+                  onChange: (event) => setTranslationDraft((draft) => ({
+                    ...(draft ?? state.translation ?? {}),
+                    targetLanguage: event.target.value,
+                  })),
+                }, (state.languages.length > 0 ? state.languages : ['zh-CN'])
+                  .map((lang) => h('option', { key: lang, value: lang }, lang)))),
+              h('label', { className: 'dshpm-field', style: { margin: 0 } },
+                h('span', { className: 'dshpm-field-label' }, t('translate.provider')),
+                h('input', {
+                  className: 'dshpm-input',
+                  value: (translationDraft ?? state.translation)?.provider ?? '',
+                  placeholder: 'deepseek',
+                  onChange: (event) => setTranslationDraft((draft) => ({
+                    ...(draft ?? state.translation ?? {}),
+                    provider: event.target.value,
+                  })),
+                })),
+              h('label', { className: 'dshpm-field', style: { margin: 0 } },
+                h('span', { className: 'dshpm-field-label' }, t('translate.model')),
+                h('input', {
+                  className: 'dshpm-input',
+                  value: (translationDraft ?? state.translation)?.model ?? '',
+                  placeholder: 'deepseek-chat',
+                  onChange: (event) => setTranslationDraft((draft) => ({
+                    ...(draft ?? state.translation ?? {}),
+                    model: event.target.value,
+                  })),
+                })),
+              h(Button, {
+                primary: true,
+                disabled: busy || translationDraft === null,
+                onClick: () => saveTranslationSettings(translationDraft),
+              }, t('translate.save'))),
+            h('p', { className: 'dshpm-hint', style: { margin: '6px 0 0' } }, t('translate.llmHint')),
+            h('p', {
+              className: 'dshpm-hint',
+              style: { margin: '4px 0 0', color: state.llm.available ? undefined : 'var(--dsw-alias-state-error-primary)' },
+            }, state.llm.available
+              ? t('translate.llmAvailable', { providers: state.llm.providers.join(', ') })
+              : t('translate.llmUnavailable'))),
+          tab === 'mine' && renderZone(
+            t('section.mine'),
+            t('section.mineDesc'),
+            groups.mine,
+            h('div', { className: 'dshpm-actions' },
+              h(Button, { outline: true, onClick: () => setSourceDialog({}), disabled: busy }, t('action.addSource')),
+              h(Button, { primary: true, onClick: () => setEditor({}), disabled: busy }, t('action.new'))),
+            pluginFilter ? t('plugin.emptyFilter') : t('prompts.empty'),
+          ),
+          tab === 'system' && renderZone(
+            t('section.system'),
+            t('section.systemDesc'),
+            groups.system,
+            h(Button, { outline: true, disabled: busy, title: t('action.importDshHint'), onClick: importDsh }, t('action.importDsh')),
+            t('section.systemEmpty'),
+          ),
+          tab === 'plugin' && renderZone(
+            t('section.plugin'),
+            t('section.pluginDesc'),
+            groups.plugin,
+            h(Button, { outline: true, disabled: busy, title: t('action.importDshHint'), onClick: importDsh }, t('action.importDsh')),
+            t('section.pluginEmpty'),
+          ),
           editor && h(EditorDialog, {
             t,
             sources: state.sources,
             initial: editor.initial,
+            presetName: presetView === null
+              ? ''
+              : ((state.presets.find((p) => p.id === presetView) ?? {}).name || presetView),
             saving: editor.saving === true,
             error: editor.error,
             onCancel: () => setEditor(null),
             onSave: async (values) => {
               setEditor((prev) => ({ ...prev, saving: true, error: undefined }))
               const failure = await run(() => {
+                // Creating a prompt always writes it as a global default; a
+                // preset view only ever patches the existing entry.
                 if (!editor.initial?.key) {
                   return unwrap(api().create({ sourceId: values.sourceId, title: values.title, content: values.content, inject: values.inject }))
                 }
+                const preset = presetView === null ? {} : { preset: presetView }
                 if (editor.initial.editableTitle === false) {
-                  return unwrap(api().update({ key: editor.initial.key, content: values.content, inject: values.inject }))
+                  return unwrap(api().update({ key: editor.initial.key, content: values.content, inject: values.inject, ...preset }))
                 }
-                return unwrap(api().update({ key: editor.initial.key, title: values.title, content: values.content, inject: values.inject }))
+                return unwrap(api().update({ key: editor.initial.key, title: values.title, content: values.content, inject: values.inject, ...preset }))
               })
               if (failure === true) setEditor(null)
               else setEditor((prev) => ({ ...prev, saving: false, error: failure?.message ?? 'failed' }))
@@ -838,7 +1579,7 @@ window.__ModuleLoader__.load({
               if (failure === true) setSourceDialog(null)
               else setSourceDialog((prev) => ({ ...prev, saving: false, error: failure?.message ?? 'failed' }))
             },
-          }))
+          })))
     }
 
     function PromptsIcon({ size = 16 }) {

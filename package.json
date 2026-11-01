@@ -1,6 +1,6 @@
 {
   "name": "@local/prompt-manager",
-  "version": "1.0.0",
+  "version": "1.9.2",
   "private": true,
   "type": "module",
   "description": "Prompt library manager: file-backed prompt sources with a sidebar management page and optional system-prompt injection.",
