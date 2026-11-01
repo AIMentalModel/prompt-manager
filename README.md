@@ -2,6 +2,16 @@
 
 DSH 的提示词管理插件：文件驱动的提示词库 + Web UI 管理面板 + 可选的系统提示词注入。
 
+## 安装
+
+```sh
+dsh plugin add github:AIMentalModel/prompt-manager
+```
+
+装好后在 DSH Web 的侧边栏打开「提示词管理」。插件通过 `dsh.bundle`（`cordis.patch.yml`）挂载：Host 端注册 `promptManager` 服务与系统提示词 section，Web 端注册侧边栏面板与主页面。
+
+依赖 DSH 提供 `systemPrompt` 服务。headless profile 没有 `agentPresets` 时预设相关区域为空、其余功能正常；profile 没有 `llm` 服务时翻译按钮会报错、其余功能正常。
+
 ## 功能
 
 - **两种来源文件**：
